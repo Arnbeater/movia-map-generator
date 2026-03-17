@@ -1,0 +1,36 @@
+/* ─── Movia Design Tokens ─── */
+:root {
+  --color-bg:        #F4F2EE;
+  --color-surface:   #FFFFFF;
+  --color-border:    #D8D4CC;
+  --color-text:      #1A1714;
+  --color-text-muted:#6B6660;
+  --color-accent:    #E2001A;   /* Movia rød */
+  --color-accent-2:  #002D5F;   /* Movia mørkeblå */
+
+  --font-sans: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --radius: 4px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.10), 0 4px 16px rgba(0,0,0,0.06);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+/* MapLibre reset */
+.maplibregl-map { font: inherit; }
+.maplibregl-ctrl-logo { display: none !important; }

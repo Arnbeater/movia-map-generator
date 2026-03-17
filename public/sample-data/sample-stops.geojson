@@ -1,0 +1,45 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [12.5683, 55.6761] },
+      "properties": { "name": "Rådhuspladsen", "line": "5C", "zone": "01" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [12.5756, 55.6794] },
+      "properties": { "name": "Nørreport St.", "line": "5C", "zone": "01" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [12.5719, 55.6833] },
+      "properties": { "name": "Trianglen", "line": "5C", "zone": "01" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [12.5802, 55.6912] },
+      "properties": { "name": "Ryparken", "line": "5C", "zone": "01" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [12.5831, 55.6998] },
+      "properties": { "name": "Bispebjerg Hospital", "line": "5C", "zone": "01" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [12.4922, 55.6629] },
+      "properties": { "name": "Frederiksberg Allé", "line": "26", "zone": "01" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [12.5012, 55.6701] },
+      "properties": { "name": "Godthåbsvej", "line": "26", "zone": "01" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [12.5101, 55.6785] },
+      "properties": { "name": "Grøndal", "line": "26", "zone": "01" }
+    }
+  ]
+}
