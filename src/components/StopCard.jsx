@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import maplibregl from 'maplibre-gl'
 import { getLineColor } from '../utils/lineColors.js'
+import { applyMoviaStyle } from '../utils/mapStyle.js'
 import './StopCard.css'
 
 export default function StopCard({ stop, line, index, corridorCoords }) {
@@ -24,6 +25,9 @@ export default function StopCard({ stop, line, index, corridorCoords }) {
     })
 
     map.on('load', () => {
+      // ── Movia clean style ─────────────────────────────────────────────────
+      applyMoviaStyle(map)
+
       // ── Line corridor ─────────────────────────────────────────────────────
       if (corridorCoords && corridorCoords.length >= 2) {
         map.addSource('corridor', {
