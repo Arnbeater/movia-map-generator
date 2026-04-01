@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 import StopCard from './StopCard.jsx'
+import { extractNearbyStops } from '../utils/geoParser.js'
 import './PreviewGrid.css'
 
 export default function PreviewGrid({ stops, selectedLine, geoData, setExportReady }) {
-  // Build corridor coordinates: prefer a LineString feature from the GeoJSON,
-  // otherwise synthesise from the ordered stop positions.
   const corridorCoords = useMemo(() => {
     if (geoData) {
       const feature = geoData.features?.find(
@@ -15,6 +14,8 @@ export default function PreviewGrid({ stops, selectedLine, geoData, setExportRea
     }
     return stops.map(s => [s.lng, s.lat])
   }, [stops, selectedLine, geoData])
+
+  const nearbyStops = useMemo(() => extractNearbyStops(geoData), [geoData])
 
   return (
     <div>
@@ -30,6 +31,7 @@ export default function PreviewGrid({ stops, selectedLine, geoData, setExportRea
             line={selectedLine}
             index={i}
             corridorCoords={corridorCoords}
+            nearbyStops={nearbyStops}
           />
         ))}
       </div>

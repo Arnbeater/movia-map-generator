@@ -44,6 +44,22 @@ export function extractCorridorForLine(geoData, line) {
   return feature ? feature.geometry.coordinates : null
 }
 
+/**
+ * Extract nearby stop markers (stopType === 'nearby') embedded in the GeoJSON.
+ * These are injected by the Stoppestedsunivers deep-link payload.
+ */
+export function extractNearbyStops(geoData) {
+  return (geoData?.features ?? [])
+    .filter(f => f.geometry?.type === 'Point' && f.properties?.stopType === 'nearby')
+    .map(f => ({
+      name:           f.properties.name,
+      lat:            f.geometry.coordinates[1],
+      lng:            f.geometry.coordinates[0],
+      lines:          f.properties.lines ?? [],
+      distanceMeters: f.properties.distanceMeters ?? 0,
+    }))
+}
+
 export function extractStopsForLine(geoData, line) {
   const stops = []
 
