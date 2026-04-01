@@ -5,8 +5,8 @@
   --color-border:    #D8D4CC;
   --color-text:      #1A1714;
   --color-text-muted:#6B6660;
-  --color-accent:    #E2001A;   /* Movia rød */
-  --color-accent-2:  #002D5F;   /* Movia mørkeblå */
+  --color-accent:    #FFBA00;   /* Movia gul */
+  --color-accent-2:  #0073CF;   /* Movia blå */
 
   --font-sans: 'IBM Plex Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
@@ -31,6 +31,6 @@ button {
   cursor: pointer;
 }
 
-/* MapLibre reset */
-.maplibregl-map { font: inherit; }
-.maplibregl-ctrl-logo { display: none !important; }
+/* Leaflet reset */
+.leaflet-container { font: inherit; }
+.leaflet-control-attribution { display: none !important; }

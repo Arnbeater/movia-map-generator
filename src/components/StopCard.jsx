@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import maplibregl from 'maplibre-gl'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 import { getLineColor } from '../utils/lineColors.js'
-import { applyMoviaStyle } from '../utils/mapStyle.js'
 import './StopCard.css'
 
 export default function StopCard({ stop, line, index, corridorCoords }) {
@@ -12,58 +12,45 @@ export default function StopCard({ stop, line, index, corridorCoords }) {
   useEffect(() => {
     if (!mapRef.current || mapInstance.current) return
 
-    const lineColor = getLineColor(line)
-
-    const map = new maplibregl.Map({
-      container: mapRef.current,
-      style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-      center: [stop.lng, stop.lat],
+    const map = L.map(mapRef.current, {
+      center: [stop.lat, stop.lng],
       zoom,
-      interactive: false,
+      zoomControl: false,
       attributionControl: false,
-      preserveDrawingBuffer: true,   // required for toDataURL() in PDF export
     })
 
-    map.on('load', () => {
-      // ── Movia clean style ─────────────────────────────────────────────────
-      applyMoviaStyle(map)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd',
+      maxZoom: 20,
+    }).addTo(map)
 
-      // ── Line corridor ─────────────────────────────────────────────────────
-      if (corridorCoords && corridorCoords.length >= 2) {
-        map.addSource('corridor', {
-          type: 'geojson',
-          data: {
-            type: 'Feature',
-            geometry: { type: 'LineString', coordinates: corridorCoords },
-          },
-        })
+    // ── Line corridor ──────────────────────────────────────────────────────
+    if (corridorCoords && corridorCoords.length >= 2) {
+      const lineColor = getLineColor(line)
+      // corridorCoords is [lng, lat] — Leaflet needs [lat, lng]
+      const latlngs = corridorCoords.map(([lng, lat]) => [lat, lng])
+      L.polyline(latlngs, { color: '#ffffff', weight: 6, opacity: 0.7 }).addTo(map)
+      L.polyline(latlngs, { color: lineColor, weight: 3 }).addTo(map)
+    }
 
-        // Soft halo so the line is legible on any basemap
-        map.addLayer({
-          id:     'corridor-halo',
-          type:   'line',
-          source: 'corridor',
-          layout: { 'line-join': 'round', 'line-cap': 'round' },
-          paint:  { 'line-color': '#ffffff', 'line-width': 6, 'line-opacity': 0.7 },
-        })
-
-        map.addLayer({
-          id:     'corridor-line',
-          type:   'line',
-          source: 'corridor',
-          layout: { 'line-join': 'round', 'line-cap': 'round' },
-          paint:  { 'line-color': lineColor, 'line-width': 3 },
-        })
-      }
-
-      // ── Stop marker ───────────────────────────────────────────────────────
-      new maplibregl.Marker({ color: '#E2001A' })
-        .setLngLat([stop.lng, stop.lat])
-        .addTo(map)
+    // ── Stop marker — black teardrop ───────────────────────────────────────
+    const icon = L.divIcon({
+      className: '',
+      iconAnchor: [12, 36],
+      html: `<svg width="24" height="36" viewBox="0 0 24 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C7.029 2 3 6.029 3 11C3 17 12 34 12 34C12 34 21 17 21 11C21 6.029 16.971 2 12 2Z"
+              fill="#1a1a1a" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="12" cy="11" r="4.5" fill="white"/>
+      </svg>`,
     })
+    L.marker([stop.lat, stop.lng], { icon }).addTo(map)
 
     mapInstance.current = map
-    return () => map.remove()
+
+    return () => {
+      map.remove()
+      mapInstance.current = null
+    }
   }, [])
 
   function handleZoomChange(delta) {
