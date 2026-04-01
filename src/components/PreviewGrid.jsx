@@ -15,7 +15,7 @@ export default function PreviewGrid({ stops, selectedLine, geoData, setExportRea
       <div className="preview-grid">
         {stops.map((stop, i) => (
           <StopCard
-            key={i}
+            key={`${stop.lat}-${stop.lng}`}
             stop={stop}
             line={selectedLine}
             index={i}
