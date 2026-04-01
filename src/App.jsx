@@ -9,7 +9,14 @@ export default function App() {
   const [geoData, setGeoData]           = useState(null)
   const [selectedLine, setSelectedLine] = useState(null)
   const [stops, setStops]               = useState([])
+  const [selectedStop, setSelectedStop] = useState(null)  // null = vis alle
   const [exportReady, setExportReady]   = useState(false)
+
+  // Reset stop filter when line changes
+  function handleSetStops(newStops) {
+    setStops(newStops)
+    setSelectedStop(null)
+  }
 
   // Load stop from URL param ?stop=<base64-geojson>
   useEffect(() => {
@@ -23,11 +30,14 @@ export default function App() {
       if (lines.length === 1) {
         setSelectedLine(lines[0])
         setStops(extractStopsForLine(json, lines[0]))
+        setSelectedStop(null)
       }
     } catch {
       console.warn('Ugyldigt stop-parameter i URL')
     }
   }, [])
+
+  const visibleStops = selectedStop !== null ? [stops[selectedStop]] : stops
 
   return (
     <div className="app-shell">
@@ -43,14 +53,16 @@ export default function App() {
           setGeoData={setGeoData}
           selectedLine={selectedLine}
           setSelectedLine={setSelectedLine}
-          setStops={setStops}
+          setStops={handleSetStops}
           exportReady={exportReady}
           stops={stops}
+          selectedStop={selectedStop}
+          setSelectedStop={setSelectedStop}
         />
 
         <main className="app-main">
-          {stops.length > 0
-            ? <PreviewGrid stops={stops} selectedLine={selectedLine} geoData={geoData} setExportReady={setExportReady} />
+          {visibleStops.length > 0
+            ? <PreviewGrid stops={visibleStops} selectedLine={selectedLine} geoData={geoData} setExportReady={setExportReady} />
             : <EmptyState hasData={!!geoData} />
           }
         </main>

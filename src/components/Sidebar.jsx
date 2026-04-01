@@ -4,7 +4,13 @@ import { parseCsvToGeoJson } from '../utils/csvParser.js'
 import { exportToPDF } from '../utils/exportPDF.js'
 import './Sidebar.css'
 
-export default function Sidebar({ geoData, setGeoData, selectedLine, setSelectedLine, setStops, stops, exportReady }) {
+export default function Sidebar({
+  geoData, setGeoData,
+  selectedLine, setSelectedLine,
+  setStops, stops,
+  selectedStop, setSelectedStop,
+  exportReady,
+}) {
   const fileRef = useRef()
 
   function handleFile(e) {
@@ -17,9 +23,7 @@ export default function Sidebar({ geoData, setGeoData, selectedLine, setSelected
       const reader = new FileReader()
       reader.onload = (ev) => {
         const { geoJson, errors } = parseCsvToGeoJson(ev.target.result)
-        if (errors.length > 0) {
-          console.warn('CSV-advarsler:', errors)
-        }
+        if (errors.length > 0) console.warn('CSV-advarsler:', errors)
         if (!geoJson || geoJson.features.length === 0) {
           alert('Ingen gyldige stoppesteder fundet i CSV.\n\n' + errors.join('\n'))
           return
@@ -59,6 +63,7 @@ export default function Sidebar({ geoData, setGeoData, selectedLine, setSelected
   }
 
   const lines = geoData ? extractLines(geoData) : []
+  const visibleCount = selectedStop !== null ? 1 : stops.length
 
   return (
     <aside className="sidebar">
@@ -88,11 +93,23 @@ export default function Sidebar({ geoData, setGeoData, selectedLine, setSelected
 
       {stops.length > 0 && (
         <section className="sidebar-section">
-          <label className="section-label">3. Stoppesteder</label>
-          <p className="stop-count">{stops.length} stoppesteder fundet</p>
+          <div className="stop-list-header">
+            <label className="section-label">3. Stoppested</label>
+            {selectedStop !== null && (
+              <button className="btn-show-all" onClick={() => setSelectedStop(null)}>
+                Vis alle
+              </button>
+            )}
+          </div>
           <ul className="stop-list">
             {stops.map((s, i) => (
-              <li key={i} className="stop-item">{s.name}</li>
+              <li
+                key={i}
+                className={`stop-item${selectedStop === i ? ' stop-item--active' : ''}`}
+                onClick={() => setSelectedStop(selectedStop === i ? null : i)}
+              >
+                {s.name}
+              </li>
             ))}
           </ul>
         </section>
@@ -101,14 +118,14 @@ export default function Sidebar({ geoData, setGeoData, selectedLine, setSelected
       <div className="sidebar-footer">
         <button
           className="btn-export"
-          disabled={stops.length === 0}
-          onClick={() => exportToPDF(stops, selectedLine)}
+          disabled={visibleCount === 0}
+          onClick={() => exportToPDF(selectedStop !== null ? [stops[selectedStop]] : stops, selectedLine)}
         >
           Eksporter PDF-pakke
         </button>
         <p className="export-hint">
-          {stops.length > 0
-            ? `Genererer ${stops.length} kort`
+          {visibleCount > 0
+            ? `Genererer ${visibleCount} kort`
             : 'Vælg en linje for at eksportere'}
         </p>
       </div>

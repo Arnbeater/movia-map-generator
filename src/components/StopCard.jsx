@@ -55,7 +55,7 @@ function makeCurrentStopIcon() {
   })
 }
 
-export default function StopCard({ stop, line, index, corridorCoords, nearbyStops = [] }) {
+export default function StopCard({ stop, line, index, nearbyStops = [] }) {
   const mapRef      = useRef(null)
   const mapInstance = useRef(null)
   const [zoom, setZoom] = useState(15)
@@ -74,14 +74,6 @@ export default function StopCard({ stop, line, index, corridorCoords, nearbyStop
       subdomains: 'abcd',
       maxZoom: 20,
     }).addTo(map)
-
-    // ── Line corridor ──────────────────────────────────────────────────────
-    if (corridorCoords && corridorCoords.length >= 2) {
-      const lineColor = getLineColor(line)
-      const latlngs = corridorCoords.map(([lng, lat]) => [lat, lng])
-      L.polyline(latlngs, { color: '#ffffff', weight: 6, opacity: 0.7 }).addTo(map)
-      L.polyline(latlngs, { color: lineColor, weight: 3 }).addTo(map)
-    }
 
     // ── Nearby stop markers ────────────────────────────────────────────────
     for (const s of nearbyStops) {

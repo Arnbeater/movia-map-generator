@@ -4,17 +4,6 @@ import { extractNearbyStops } from '../utils/geoParser.js'
 import './PreviewGrid.css'
 
 export default function PreviewGrid({ stops, selectedLine, geoData, setExportReady }) {
-  const corridorCoords = useMemo(() => {
-    if (geoData) {
-      const feature = geoData.features?.find(
-        f => f.geometry?.type === 'LineString' &&
-             String(f.properties?.line) === String(selectedLine)
-      )
-      if (feature) return feature.geometry.coordinates
-    }
-    return stops.map(s => [s.lng, s.lat])
-  }, [stops, selectedLine, geoData])
-
   const nearbyStops = useMemo(() => extractNearbyStops(geoData), [geoData])
 
   return (
@@ -30,7 +19,6 @@ export default function PreviewGrid({ stops, selectedLine, geoData, setExportRea
             stop={stop}
             line={selectedLine}
             index={i}
-            corridorCoords={corridorCoords}
             nearbyStops={nearbyStops}
           />
         ))}
